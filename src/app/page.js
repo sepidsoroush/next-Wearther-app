@@ -5,10 +5,12 @@ import axios from "axios";
 export default function Home() {
   // declare variables
   const [city , setCity] = useState('');
-  const [temp , setTemp] = useState(null);
-  const [minTemp , setMinTemp] = useState('');
-  const [maxTemp , setMaxTemp] =useState('');
-  const [error , setError] =useState(false);
+  const [temp , setTemp] = useState('');
+  const [feelsLike , setFeelLikes] = useState('');
+  const [wind , setWind] = useState('');
+  const [humidity , SetHumidity] = useState('');
+  const [icon , setIcon] = useState(null);
+  const [error , setError] = useState(false);
   const [location , setLocation] = useState({lat : null , lon : null});
 
 
