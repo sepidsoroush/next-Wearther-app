@@ -1,6 +1,7 @@
 "use client"
 import { useState } from "react";
 import axios from "axios";
+import styles from './page.module.css';
 
 export default function Home() {
   // declare variables
@@ -27,13 +28,15 @@ export default function Home() {
         const data = response.data[0];
         setLocation({lat : data.lat , lon : data.lon});
         getWeather(location.lat , location.lon);
+        setCity(data.name);
+
       })
       .catch(function(error){
         console.log(error);
       })
   }
 
-  const getWeather =(lat , lon)=>{     
+  const getWeather =(lat , lon)=>{   
     const options = {
       method: 'GET',
       url: `https://dark-sky.p.rapidapi.com/${lat},${lon}`,
@@ -48,8 +51,8 @@ export default function Home() {
       .then(function (response) {
         setShow(true);
         const data = response.data.currently;
-        setTemp(data.temperature);
-        setFeelLikes(data.apparentTemperature);
+        setTemp(Math.ceil(data.temperature));
+        setFeelLikes(Math.ceil(data.apparentTemperature));
         setWind(data.windSpeed);
         SetHumidity(data.humidity);
         setSummary(data.summary);
@@ -61,46 +64,52 @@ export default function Home() {
       });
   }
   return (
-    <main>
-      <div>
-        <h1>Weather App</h1>
-      </div>
-      <div>
-        <input 
-        type="text"
-        placeholder="city"
-        onChange={event => setCity(event.target.value)}
-         />
-        <button
-        onClick={getLocation}
-        >
-          Search
-      </button>
-      </div>
-      {show && (
-      <div>
-        <div>
-          <p>{city}</p>
-          <p>{temp} °C</p>
-          <p>{summary}</p>
+    <main className={styles.main}>
+      <div className={styles.container}>
+        <div className={styles.title}>
+          <h1>Weather App</h1>
         </div>
-        <div>
-          <p>Feels Like:</p>
-          <p>{feelsLike} °C</p>
+        <div className={styles.searchbox}>
+          <input 
+          type="text"
+          placeholder="city"
+          className={styles.input}
+          onChange={event => setCity(event.target.value)}
+          />
+          <button
+          className={styles.button}
+          onClick={getLocation}
+          >
+            Search
+        </button>
         </div>
-        <div>
-          <p>Humidity:</p>
-          <p>{humidity}%</p>
-        </div>
-        <div>
-          <p>Wind Speed:</p>
-          <p>{wind}km/h</p>
-        </div>        
-      </div>)}
-      {error && (
-        <div>
-          <p>Couldn't find weather results.</p>          
+        {show && (
+        <div className={styles.infoContainer}>
+          <div className={styles.mainInfo}>
+            <p>{city}</p>
+            <p className={styles.temperature}>{temp} °C</p>
+            <p>{summary}</p>
+          </div>
+          <div className={styles.extraInfo}>
+            <div className={styles.border}>
+              <p className={styles.infoTitle}>Feels Like</p>
+              <p className={styles.infoText}>{feelsLike}<span className={styles.sign}>°C</span></p>
+            </div>
+            <div className={styles.border}>
+              <p className={styles.infoTitle}>Humidity</p>
+              <p className={styles.infoText}>{humidity}<span className={styles.sign}>%</span></p>
+            </div>
+            <div className={styles.border}>
+              <p className={styles.infoTitle}>Wind Speed</p>
+              <p className={styles.infoText}>{wind}<span className={styles.sign}>km/h</span></p>
+            </div> 
+          </div>       
         </div>)}
+        {error && (
+          <div>
+            <p>Couldn't find weather results.</p>          
+          </div>)}
+      </div>
     </main>
   )
 }
