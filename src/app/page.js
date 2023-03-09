@@ -23,38 +23,34 @@ export default function Home() {
       .then(function(response){
         const data = response.data[0];
         setLocation({lat : data.lat , lon : data.lon});
-        console.log(location);
+        getWeather(location.lat , location.lon);
+        // console.log(location);
+
       })
       .catch(function(error){
         console.log(error);
       })
   }
-  // if (navigator.geolocation) {
-  //   navigator.geolocation.getCurrentPosition(function (position) {
-  //     var lat = position.coords.latitude;
-  //     var long = position.coords.longitude;
-  //     console.log('Your latitude is: '+lat+' and longitude is '+long);
-  //     getWeather(lat , long);
-  //   });
-  // } else {
-  //   alert("Geolocation is not supported by this browser.");
-  // }
-  // const getWeather =(lat , long)=>{     
-  //   const options = {
-  //     method: 'GET',
-  //     url: `https://dark-sky.p.rapidapi.com/${lat},${long}`,
-  //     params: {units: 'auto', lang: 'en'},
-  //     headers: {
-  //       'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
-  //       'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
-  //     }
-  //   };
-  //   axios.request(options).then(function (response) {
-  //     console.log(response.data);
-  //   }).catch(function (error) {
-  //     console.error(error);
-  //   });
-  // }
+
+  const getWeather =(lat , lon)=>{     
+    const options = {
+      method: 'GET',
+      url: `https://dark-sky.p.rapidapi.com/${lat},${lon}`,
+      params: {units: 'auto', lang: 'en'},
+      headers: {
+        'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
+        'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
+      }
+    };
+    axios
+      .request(options)
+      .then(function (response) {
+        const data = response.data.currently;
+        console.log(data);
+      }).catch(function (error) {
+        console.error(error);
+      });
+  }
   return (
     <main>
       <div>
