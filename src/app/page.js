@@ -9,8 +9,9 @@ export default function Home() {
   const [feelsLike , setFeelLikes] = useState('');
   const [wind , setWind] = useState('');
   const [humidity , SetHumidity] = useState('');
-  const [icon , setIcon] = useState(null);
+  const [summary , setSummary] = useState('');
   const [error , setError] = useState(false);
+  const [show , setShow] = useState(false);
   const [location , setLocation] = useState({lat : null , lon : null});
 
 
@@ -26,8 +27,6 @@ export default function Home() {
         const data = response.data[0];
         setLocation({lat : data.lat , lon : data.lon});
         getWeather(location.lat , location.lon);
-        // console.log(location);
-
       })
       .catch(function(error){
         console.log(error);
@@ -47,14 +46,17 @@ export default function Home() {
     axios
       .request(options)
       .then(function (response) {
+        setShow(true);
         const data = response.data.currently;
         setTemp(data.temperature);
         setFeelLikes(data.apparentTemperature);
         setWind(data.windSpeed);
         SetHumidity(data.humidity);
-        setIcon(data.icon);
-        // console.log(response);
+        setSummary(data.summary);
+        setError(false);
       }).catch(function (error) {
+        setShow(false);
+        setError(true);
         console.error(error);
       });
   }
@@ -63,7 +65,6 @@ export default function Home() {
       <div>
         <h1>Weather App</h1>
       </div>
-      
       <div>
         <input 
         type="text"
@@ -76,25 +77,30 @@ export default function Home() {
           Search
       </button>
       </div>
-      {/* {temp && (
+      {show && (
       <div>
         <div>
-          <p>Temperature:</p>
+          <p>{city}</p>
           <p>{temp} °C</p>
+          <p>{summary}</p>
         </div>
         <div>
-          <p>Min Temperature:</p>
-          <p>{minTemp} °C</p>
+          <p>Feels Like:</p>
+          <p>{feelsLike} °C</p>
         </div>
         <div>
-          <p>Max Temperature:</p>
-          <p>{maxTemp} °C</p>
+          <p>Humidity:</p>
+          <p>{humidity}%</p>
+        </div>
+        <div>
+          <p>Wind Speed:</p>
+          <p>{wind}km/h</p>
         </div>        
       </div>)}
       {error && (
         <div>
           <p>Couldn't find weather results.</p>          
-        </div>)} */}
+        </div>)}
     </main>
   )
 }
