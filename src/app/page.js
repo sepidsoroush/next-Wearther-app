@@ -10,36 +10,50 @@ export default function Home() {
   const [maxTemp , setMaxTemp] =useState('');
   const [error , setError] =useState(false);
 
-  function getLocation() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-      alert("It seems like Geolocation, which is required for this page, is not enabled in your browser. Please use a browser which supports it.");
-    }
-    }
-    function showPosition(position) {
-      let lat = position.coords.latitude;
-      let long = position.coords.longitude;
-      console.log('Your latitude is :'+lat+' and longitude is '+long);
-    }
 
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      var lat = position.coords.latitude;
+      var long = position.coords.longitude;
+      console.log('Your latitude is: '+lat+' and longitude is '+long);
+      getWeather(lat , long);
+    });
+  } else {
+    alert("Geolocation is not supported by this browser.");
+  }
+  const getWeather =(lat , long)=>{     
+    const options = {
+      method: 'GET',
+      url: `https://dark-sky.p.rapidapi.com/${lat},${long}`,
+      params: {units: 'auto', lang: 'en'},
+      headers: {
+        'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
+        'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
+      }
+    };
+    axios.request(options).then(function (response) {
+      console.log(response.data);
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
   return (
     <main>
       <div>
         <h1>Weather App</h1>
       </div>
-      
+      <button
+        onClick={getWeather}
+        >
+          Search
+        </button>
       {/* <div>
         <input 
         type="text"
         placeholder="city"
         onChange={event => setCity(event.target.value)}
          />
-        <button
-        onClick={getLocation}
-        >
-          Search
-        </button>
+        
       </div> */}
       {/* {temp && (
       <div>
