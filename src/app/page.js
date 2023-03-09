@@ -9,19 +9,21 @@ export default function Home() {
   const [minTemp , setMinTemp] = useState('');
   const [maxTemp , setMaxTemp] =useState('');
   const [error , setError] =useState(false);
+  const [location , setLocation] = useState({lat : null , lon : null});
+
 
   const getLocation = ()=>{
     const cities = {
       method : 'GET',
       url : `http://api.openweathermap.org/geo/1.0/direct` ,
-      params :{q : `${city}` , limit : 1 , appid : '6e65a6b80661f81d2e592ae68a18c37c'}
+      params :{q : `${city}` , limit : 5 , appid : '6e65a6b80661f81d2e592ae68a18c37c'}
     }
     axios
       .request(cities)
       .then(function(response){
-        console.log(response.data);
-        
-        
+        const data = response.data[0];
+        setLocation({lat : data.lat , lon : data.lon});
+        console.log(location);
       })
       .catch(function(error){
         console.log(error);
