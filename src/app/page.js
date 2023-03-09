@@ -48,7 +48,12 @@ export default function Home() {
       .request(options)
       .then(function (response) {
         const data = response.data.currently;
-        console.log(data);
+        setTemp(data.temperature);
+        setFeelLikes(data.apparentTemperature);
+        setWind(data.windSpeed);
+        SetHumidity(data.humidity);
+        setIcon(data.icon);
+        // console.log(response);
       }).catch(function (error) {
         console.error(error);
       });
