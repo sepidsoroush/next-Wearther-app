@@ -10,7 +10,18 @@ export default function Home() {
   const [maxTemp , setMaxTemp] =useState('');
   const [error , setError] =useState(false);
 
-
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      alert("It seems like Geolocation, which is required for this page, is not enabled in your browser. Please use a browser which supports it.");
+    }
+    }
+    function showPosition(position) {
+      let lat = position.coords.latitude;
+      let long = position.coords.longitude;
+      console.log('Your latitude is :'+lat+' and longitude is '+long);
+    }
 
   return (
     <main>
