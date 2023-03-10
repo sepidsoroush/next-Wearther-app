@@ -57,6 +57,12 @@ export default function Home() {
     }
   };
 
+  const handleKeypress = e => {
+    //it triggers by pressing the enter key
+    if (e.keyCode === 13) {
+      getLocation();
+    }
+  };
 
 
   return (
@@ -71,6 +77,7 @@ export default function Home() {
           placeholder="city"
           className={styles.input}
           onChange={event => setInput(event.target.value)}
+          onKeyDown={handleKeypress}
           />
           <button
           className={styles.button}
