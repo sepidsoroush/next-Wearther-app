@@ -69,7 +69,7 @@ export default function Home() {
         <div className={styles.title}>
           <h1>Weather App</h1>
         </div>
-        <div className={styles.searchbox}>
+        <div>
           <input 
           type="text"
           placeholder="city"
@@ -95,7 +95,7 @@ export default function Home() {
               <p className={styles.infoTitle}>Feels Like</p>
               <p className={styles.infoText}>{feelsLike}<span className={styles.sign}>°C</span></p>
             </div>
-            <div className={styles.border}>
+            <div className={styles.border} style={{marginLeft :'10px' , marginRight : '10px'}}>
               <p className={styles.infoTitle}>Humidity</p>
               <p className={styles.infoText}>{humidity}<span className={styles.sign}>%</span></p>
             </div>
@@ -106,7 +106,7 @@ export default function Home() {
           </div>       
         </div>)}
         {error && (
-          <div>
+          <div className={styles.error}>
             <p>Couldn't find weather results.</p>          
           </div>)}
       </div>
