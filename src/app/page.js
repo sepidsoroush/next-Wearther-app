@@ -110,7 +110,7 @@ export default function Home() {
         </div>)}
         {error && (
           <div className={styles.error}>
-            <p>Couldn't find weather results.</p>          
+            <p>Coudln&apos;t find weather.</p>          
           </div>)}
       </div>
     </main>
