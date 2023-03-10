@@ -5,64 +5,60 @@ import styles from './page.module.css';
 
 export default function Home() {
   // declare variables
-  const [city , setCity] = useState('');
+  const [input , setInput] = useState('');
   const [temp , setTemp] = useState('');
   const [feelsLike , setFeelLikes] = useState('');
   const [wind , setWind] = useState('');
   const [humidity , SetHumidity] = useState('');
   const [summary , setSummary] = useState('');
+  const [city , setCity] =useState('');
   const [error , setError] = useState(false);
   const [show , setShow] = useState(false);
-  const [location , setLocation] = useState({lat : null , lon : null});
 
-
-  const getLocation = ()=>{
-    const cities = {
-      method : 'GET',
-      url : `http://api.openweathermap.org/geo/1.0/direct` ,
-      params :{q : `${city}` , limit : 5 , appid : '6e65a6b80661f81d2e592ae68a18c37c'}
-    }
-    axios
-      .request(cities)
-      .then(function(response){
-        const data = response.data[0];
-        setLocation({lat : data.lat , lon : data.lon});
-        getWeather(location.lat , location.lon);
-        setCity(data.name);
-
-      })
-      .catch(function(error){
-        console.log(error);
-      })
-  }
-
-  const getWeather =(lat , lon)=>{   
-    const options = {
-      method: 'GET',
-      url: `https://dark-sky.p.rapidapi.com/${lat},${lon}`,
-      params: {units: 'auto', lang: 'en'},
-      headers: {
-        'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
-        'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
-      }
-    };
-    axios
-      .request(options)
-      .then(function (response) {
-        setShow(true);
-        const data = response.data.currently;
-        setTemp(Math.ceil(data.temperature));
-        setFeelLikes(Math.ceil(data.apparentTemperature));
-        setWind(data.windSpeed);
-        SetHumidity(data.humidity);
-        setSummary(data.summary);
-        setError(false);
-      }).catch(function (error) {
-        setShow(false);
-        setError(true);
-        console.error(error);
+  const getLocation = async () => {
+    try {
+      const response = await axios.get('http://api.openweathermap.org/geo/1.0/direct', {
+        params: {
+          q: `${input}`,
+          limit: 5,
+          appid: '6e65a6b80661f81d2e592ae68a18c37c',
+        }
       });
-  }
+
+      const data = response.data[0];
+      await getWeather(data.lat, data.lon , data.name);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getWeather = async (lat, lon , name) => {
+    try {
+      const response = await axios.get(`https://dark-sky.p.rapidapi.com/${lat},${lon}`, {
+        params: { units: 'auto', lang: 'en' },
+        headers: {
+          'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
+          'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
+        }
+      });
+      setShow(true);
+      const factors = response.data.currently;
+      setCity(name);
+      setTemp(Math.ceil(factors.temperature));
+      setFeelLikes(Math.ceil(factors.apparentTemperature));
+      setWind(factors.windSpeed);
+      SetHumidity(factors.humidity);
+      setSummary(factors.summary);
+      setError(false);
+    } catch (error) {
+      setShow(false);
+      setError(true);
+      console.error(error);
+    }
+  };
+
+
+
   return (
     <main className={styles.main}>
       <div className={styles.container}>
@@ -74,7 +70,7 @@ export default function Home() {
           type="text"
           placeholder="city"
           className={styles.input}
-          onChange={event => setCity(event.target.value)}
+          onChange={event => setInput(event.target.value)}
           />
           <button
           className={styles.button}
