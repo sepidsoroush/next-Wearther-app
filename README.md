@@ -1,3 +1,17 @@
+
+
+
+## APIs Used
+
+1. [OpenWeathermMap](https://openweathermap.org/current) I used this API to find latitude & longitude of searched city.
+2. [DarkSky](https://rapidapi.com/darkskyapis/api/dark-sky) I used this API to find parameters like temperature, humidity, etc.
+These two API are chained with async/await.
+
+## Libraries used
+
+- Axios
+- 
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
