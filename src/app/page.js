@@ -16,8 +16,10 @@ export default function Home() {
    });
   const [error , setError] = useState(false);
   const [show , setShow] = useState(false);
+  const [isLoading , setIsLoading] = useState(false);
 
   const getLocation = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get('https://api.openweathermap.org/geo/1.0/direct', {
         params: {
@@ -26,7 +28,6 @@ export default function Home() {
           appid: '6e65a6b80661f81d2e592ae68a18c37c',
         }
       });
-
       const data = response.data[0];
       await getWeather(data.lat, data.lon , data.name);
     } catch (error) {
@@ -36,6 +37,7 @@ export default function Home() {
 
   const getWeather = async (lat, lon , name) => {
     try {
+      setIsLoading(false);
       const response = await axios.get(`https://dark-sky.p.rapidapi.com/${lat},${lon}`, {
         params: { units: 'auto', lang: 'en' },
         headers: {
@@ -55,6 +57,7 @@ export default function Home() {
      });
       setError(false);
     } catch (error) {
+      setIsLoading(false);
       setShow(false);
       setError(true);
       console.error(error);
@@ -90,6 +93,7 @@ export default function Home() {
             Search
         </button>
         </div>
+        {isLoading}
         {show && (
         <div className={styles.infoContainer}>
           <div className={styles.mainInfo}>
