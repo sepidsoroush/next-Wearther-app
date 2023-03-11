@@ -94,7 +94,7 @@ export default function Home() {
             Search
         </button>
         </div>
-        {isLoading && <UilSpinnerAlt />}
+        {isLoading && <UilSpinnerAlt className={styles.loading} />}
         {show && (
         <div className={styles.infoContainer}>
           <div className={styles.mainInfo}>
