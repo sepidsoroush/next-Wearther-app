@@ -6,12 +6,14 @@ import styles from './page.module.css';
 export default function Home() {
   // declare variables
   const [input , setInput] = useState('');
-  const [temp , setTemp] = useState('');
-  const [feelsLike , setFeelLikes] = useState('');
-  const [wind , setWind] = useState('');
-  const [humidity , SetHumidity] = useState('');
-  const [summary , setSummary] = useState('');
-  const [city , setCity] =useState('');
+  const [parameters , setParameters] = useState(
+    {temp : '',
+    feelsLike:'',
+    wind :'',
+    humidity:'',
+    summary:'',
+    city:''
+   });
   const [error , setError] = useState(false);
   const [show , setShow] = useState(false);
 
@@ -43,12 +45,14 @@ export default function Home() {
       });
       setShow(true);
       const factors = response.data.currently;
-      setCity(name);
-      setTemp(Math.ceil(factors.temperature));
-      setFeelLikes(Math.ceil(factors.apparentTemperature));
-      setWind(factors.windSpeed);
-      SetHumidity(factors.humidity);
-      setSummary(factors.summary);
+      setParameters({
+        temp : Math.ceil(factors.temperature),
+        feelsLike: Math.ceil(factors.apparentTemperature),
+        wind :factors.windSpeed,
+        humidity:factors.humidity,
+        summary:factors.summary,
+        city:name
+     });
       setError(false);
     } catch (error) {
       setShow(false);
@@ -89,22 +93,22 @@ export default function Home() {
         {show && (
         <div className={styles.infoContainer}>
           <div className={styles.mainInfo}>
-            <p>{city}</p>
-            <p className={styles.temperature}>{temp} °C</p>
-            <p>{summary}</p>
+            <p>{parameters.city}</p>
+            <p className={styles.temperature}>{parameters.temp} °C</p>
+            <p>{parameters.summary}</p>
           </div>
           <div className={styles.extraInfo}>
             <div className={styles.border}>
               <p className={styles.infoTitle}>Feels Like</p>
-              <p className={styles.infoText}>{feelsLike}<span className={styles.sign}>°C</span></p>
+              <p className={styles.infoText}>{parameters.feelsLike}<span className={styles.sign}>°C</span></p>
             </div>
             <div className={styles.border} style={{marginLeft :'10px' , marginRight : '10px'}}>
               <p className={styles.infoTitle}>Humidity</p>
-              <p className={styles.infoText}>{humidity}<span className={styles.sign}>%</span></p>
+              <p className={styles.infoText}>{parameters.humidity}<span className={styles.sign}>%</span></p>
             </div>
             <div className={styles.border}>
               <p className={styles.infoTitle}>Wind Speed</p>
-              <p className={styles.infoText}>{wind}<span className={styles.sign}>km/h</span></p>
+              <p className={styles.infoText}>{parameters.wind}<span className={styles.sign}>km/h</span></p>
             </div> 
           </div>       
         </div>)}
