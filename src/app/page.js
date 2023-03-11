@@ -2,7 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import styles from './page.module.css';
-import { UilSpinnerAlt } from '@iconscout/react-unicons'
+import Spinner from './components/spinner'; 
 
 export default function Home() {
   // declare variables
@@ -13,6 +13,8 @@ export default function Home() {
     wind :'',
     humidity:'',
     summary:'',
+    lowTemp:'',
+    highTemp :'',
     city:''
    });
   const [error , setError] = useState(false);
@@ -22,40 +24,26 @@ export default function Home() {
   const getLocation = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.get('https://api.openweathermap.org/geo/1.0/direct', {
+      const response = await axios.get('https://api.openweathermap.org/data/2.5/weather', {
         params: {
           q: `${input}`,
           limit: 5,
           appid: '6e65a6b80661f81d2e592ae68a18c37c',
         }
       });
-      const data = response.data[0];
-      await getWeather(data.lat, data.lon , data.name);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getWeather = async (lat, lon , name) => {
-    try {
+      const factors = response.data.main;
       setIsLoading(false);
-      const response = await axios.get(`https://dark-sky.p.rapidapi.com/${lat},${lon}`, {
-        params: { units: 'auto', lang: 'en' },
-        headers: {
-          'X-RapidAPI-Key': '67b0005738msh9b550b5382f8820p1c3047jsn0e767ce79729',
-          'X-RapidAPI-Host': 'dark-sky.p.rapidapi.com'
-        }
-      });
       setShow(true);
-      const factors = response.data.currently;
       setParameters({
-        temp : Math.ceil(factors.temperature),
-        feelsLike: Math.ceil(factors.apparentTemperature),
-        wind :factors.windSpeed,
+        temp : Math.ceil(factors.temp - 273.15),
+        feelsLike: Math.ceil(factors.feels_like - 273.15),
+        wind :response.data.wind.speed,
         humidity:factors.humidity,
-        summary:factors.summary,
-        city:name
-     });
+        summary:response.data.weather[0].main,
+        lowTemp : Math.ceil(factors.temp_min - 273.15),
+        highTemp : Math.ceil(factors.temp_max - 273.15),
+        city:response.data.name
+      });
       setError(false);
     } catch (error) {
       setIsLoading(false);
@@ -72,7 +60,6 @@ export default function Home() {
     }
   };
 
-
   return (
     <main className={styles.main}>
       <div className={styles.container}>
@@ -81,26 +68,32 @@ export default function Home() {
         </div>
         <div>
           <input 
-          type="text"
-          placeholder="city"
-          className={styles.input}
-          onChange={event => setInput(event.target.value)}
-          onKeyDown={handleKeypress}
-          />
+            type="text"
+            placeholder="City"
+            className={styles.input}
+            onChange={event => setInput(event.target.value)}
+            onKeyDown={handleKeypress}          
+          />         
           <button
-          className={styles.button}
-          onClick={getLocation}
+            className={styles.button}
+            onClick={getLocation}
           >
             Search
-        </button>
+          </button>
         </div>
-        {isLoading && <UilSpinnerAlt className={styles.loading} />}
+        <div className={styles.spinner}>
+          {isLoading && <Spinner/>}
+        </div>        
         {show && (
         <div className={styles.infoContainer}>
           <div className={styles.mainInfo}>
             <p>{parameters.city}</p>
             <p className={styles.temperature}>{parameters.temp} °C</p>
-            <p>{parameters.summary}</p>
+            <p style={{marginBottom :'5px'}}>{parameters.summary}</p>
+            <p>
+              H: {parameters.highTemp}<span className={styles.sign}>°C</span>&nbsp; 
+              L: {parameters.lowTemp}<span className={styles.sign}>°C</span>
+            </p>
           </div>
           <div className={styles.extraInfo}>
             <div className={styles.border}>
