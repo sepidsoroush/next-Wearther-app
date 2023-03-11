@@ -2,6 +2,7 @@
 import { useState } from "react";
 import axios from "axios";
 import styles from './page.module.css';
+import { UilSpinnerAlt } from '@iconscout/react-unicons'
 
 export default function Home() {
   // declare variables
@@ -93,7 +94,7 @@ export default function Home() {
             Search
         </button>
         </div>
-        {isLoading}
+        {isLoading && <UilSpinnerAlt />}
         {show && (
         <div className={styles.infoContainer}>
           <div className={styles.mainInfo}>
